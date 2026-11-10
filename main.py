@@ -10,8 +10,6 @@ from umqtt.simple import MQTTClient
 
 from credenciais import WIFI_NOME, WIFI_SENHA
 
-sensor = dht.DHT22(Pin(4))
-
 # Constantes da estacao
 ESTACAO_ID = "estacao-01"
 PINO_DHT22 = 4
