@@ -1,4 +1,4 @@
-from machine import Pin, I2C
+from machine import Pin, I2C, ADC
 from time import sleep_ms
 import dht
 
@@ -10,6 +10,10 @@ PINO_SDA = 21
 PINO_SCL = 22
 PINO_LDR = 27
 LDR_HABILITADO = True
+PINO_MQ135 = 34
+MQ135_HABILITADO = True
+
+_mq135 = None
 
 ENDERECO_BMP280 = 0x76
 
@@ -106,17 +110,39 @@ def ler_ldr():
             "luminosidade_digital": None
         }, "erro_leitura"
 
+def ler_mq135():
+    global _mq135
+
+    if not MQ135_HABILITADO:
+        return {"mq135_adc": None}, "nao_configurado"
+
+    try:
+        if _mq135 is None:
+            _mq135 = ADC(Pin(PINO_MQ135))
+            _mq135.atten(ADC.ATTN_11DB)
+            _mq135.width(ADC.WIDTH_12BIT)
+
+        valor = _mq135.read()
+
+        return {"mq135_adc": valor}, "ok"
+
+    except (OSError, ValueError) as erro:
+        print("Falha ao ler a entrada do MQ-135:", erro)
+        _mq135 = None
+
+        return {"mq135_adc": None}, "erro_leitura"
 
 def coletar_sensores():
     dados_dht, estado_dht = ler_dht22()
     dados_bmp, estado_bmp = ler_bmp280()
     dados_ldr, estado_ldr = ler_ldr()
+    dados_mq135, estado_mq135 = ler_mq135()
 
     leituras = {
         "temperatura_c": dados_dht["temperatura_c"],
         "umidade_pct": dados_dht["umidade_pct"],
         "pressao_hpa": dados_bmp["pressao_hpa"],
-        "mq135_adc": None,
+        "mq135_adc": dados_mq135["mq135_adc"],
         "luminosidade_adc": None,
         "luminosidade_digital": dados_ldr["luminosidade_digital"]
     }
@@ -124,7 +150,7 @@ def coletar_sensores():
     estados = {
         "dht22": estado_dht,
         "bmp280": estado_bmp,
-        "mq135": "nao_configurado",
+        "mq135": estado_mq135,
         "ldr": estado_ldr
     }
 
