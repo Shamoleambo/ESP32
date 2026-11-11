@@ -13,7 +13,7 @@ from sensores import coletar_sensores
 
 # Configuração da estação
 ESTACAO_ID = "estacao-01"
-VERSAO_MENSAGEM = 2
+VERSAO_MENSAGEM = 3
 INTERVALO_LEITURA_S = 3
 TEMPO_LIMITE_WIFI_MS = 20000
 

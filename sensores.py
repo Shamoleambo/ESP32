@@ -8,6 +8,8 @@ from bmp280 import BMP280, BMP280_CASE_WEATHER
 PINO_DHT22 = 4
 PINO_SDA = 21
 PINO_SCL = 22
+PINO_LDR = 27
+LDR_HABILITADO = True
 
 ENDERECO_BMP280 = 0x76
 
@@ -86,24 +88,44 @@ def ler_bmp280():
 
         return {"pressao_hpa": None}, "erro_leitura"
 
+def ler_ldr():
+    if not LDR_HABILITADO:
+        return {"luminosidade_digital": None}, "nao_configurado"
+
+    try:
+        valor = Pin(PINO_LDR, Pin.IN).value()
+
+        return {
+            "luminosidade_digital": valor
+        }, "ok"
+
+    except (OSError, ValueError) as erro:
+        print("Falha ao ler o pino do LDR:", erro)
+
+        return {
+            "luminosidade_digital": None
+        }, "erro_leitura"
+
 
 def coletar_sensores():
     dados_dht, estado_dht = ler_dht22()
     dados_bmp, estado_bmp = ler_bmp280()
+    dados_ldr, estado_ldr = ler_ldr()
 
     leituras = {
         "temperatura_c": dados_dht["temperatura_c"],
         "umidade_pct": dados_dht["umidade_pct"],
         "pressao_hpa": dados_bmp["pressao_hpa"],
         "mq135_adc": None,
-        "luminosidade_adc": None
+        "luminosidade_adc": None,
+        "luminosidade_digital": dados_ldr["luminosidade_digital"]
     }
 
     estados = {
         "dht22": estado_dht,
         "bmp280": estado_bmp,
         "mq135": "nao_configurado",
-        "ldr": "nao_configurado"
+        "ldr": estado_ldr
     }
 
     return leituras, estados
