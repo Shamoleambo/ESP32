@@ -39,7 +39,7 @@ def ler_dht22():
             "umidade_pct": umidade
         }, "ok"
 
-    except (OSError, ValueError) as erro:
+    except Exception as erro:
         print("Falha no DHT22:", erro)
 
         return {
