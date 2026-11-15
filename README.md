@@ -16,8 +16,6 @@ O protótipo não realiza previsão meteorológica e não substitui equipamentos
 
 ## Integrantes
 
-markdown
-
 | Nome | RA | GitHub |
 | -------- | -------- | -------- |
 | Alecsandro  | H007DG5 | https://github.com/AlecsandroH |
