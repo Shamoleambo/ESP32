@@ -27,11 +27,6 @@ markdown
 | Vinicius  | R251942  | https://github.com/ |
 
 
-Gabriel Felipe Rossetto Almeida Muçouçah	R24780-5	https://github.com/GabrielRossettoMucoucah
-Tiago Diniz Gomes	https://github.com/Shamoleambo
-Pedro Henrique Silva Pimentel	https://github.com/
-
-
 ## Arquitetura
 
 ```mermaid
